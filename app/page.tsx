@@ -226,45 +226,25 @@ export default function HomePage() {
           </div>
         </section>
 
-        {/* ===== ACHIEVEMENTS + CODE ===== */}
+        {/* ===== ACHIEVEMENTS ===== */}
         <section className="py-10 sm:py-14">
-          <div className="grid grid-cols-1 lg:grid-cols-[1fr_440px] gap-6">
-            <div>
-              <span className="badge mb-4 inline-block">{t.achievements.label[lang]}</span>
-              <h2 className="text-3xl sm:text-4xl font-semibold tracking-tight mt-3 mb-8">
-                <span className="text-gradient">{t.achievements.heading1[lang]}</span> <span className="text-gradient-accent">{t.achievements.heading2[lang]}</span>
-              </h2>
-              <div className="space-y-0.5">
-                {[
-                  { icon: <Trophy className="w-4 h-4" />, z: 0 },
-                  { icon: <Star className="w-4 h-4" />, z: 1 },
-                  { icon: <Users className="w-4 h-4" />, z: 2 },
-                  { icon: <Zap className="w-4 h-4" />, z: 3 },
-                  { icon: <Shield className="w-4 h-4" />, z: 4 },
-                ].map((item) => (
-                  <div key={item.z} className="flex items-start gap-3 py-2.5 px-3 -mx-3 rounded-xl hover:bg-white/[0.02] transition-colors group/a">
-                    <span className="w-7 h-7 rounded-lg bg-white/[0.03] border border-white/[0.05] flex items-center justify-center text-[#8A8F98] group-hover/a:text-[#5E6AD2] group-hover/a:border-[#5E6AD2]/25 transition-colors shrink-0 mt-px">{item.icon}</span>
-                    <span className="text-[14px] text-[#8A8F98] group-hover/a:text-[#EDEDEF] transition-colors leading-relaxed">{t.achievements.items[lang][item.z]}</span>
-                  </div>
-                ))}
+          <span className="badge mb-4 inline-block">{t.achievements.label[lang]}</span>
+          <h2 className="text-3xl sm:text-4xl font-semibold tracking-tight mt-3 mb-8">
+            <span className="text-gradient">{t.achievements.heading1[lang]}</span> <span className="text-gradient-accent">{t.achievements.heading2[lang]}</span>
+          </h2>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            {[
+              { icon: <Trophy className="w-4 h-4" />, z: 0 },
+              { icon: <Star className="w-4 h-4" />, z: 1 },
+              { icon: <Users className="w-4 h-4" />, z: 2 },
+              { icon: <Zap className="w-4 h-4" />, z: 3 },
+              { icon: <Shield className="w-4 h-4" />, z: 4 },
+            ].map((item) => (
+              <div key={item.z} className="panel-hover p-4 flex items-start gap-3 group/a">
+                <span className="w-8 h-8 rounded-lg bg-white/[0.03] border border-white/[0.05] flex items-center justify-center text-[#5E6AD2] group-hover/a:border-[#5E6AD2]/30 transition-colors shrink-0 mt-px">{item.icon}</span>
+                <span className="text-[13px] text-[#8A8F98] group-hover/a:text-[#EDEDEF] transition-colors leading-relaxed">{t.achievements.items[lang][item.z]}</span>
               </div>
-            </div>
-
-            <div className="panel overflow-hidden flex flex-col">
-              <div className="flex items-center gap-2 px-5 py-3 border-b border-white/[0.04] bg-[#08080a]">
-                <span className="w-2.5 h-2.5 rounded-full bg-[#ff5f57]" /><span className="w-2.5 h-2.5 rounded-full bg-[#febc2e]" /><span className="w-2.5 h-2.5 rounded-full bg-[#28c840]" />
-                <span className="ml-2 font-mono text-[10px] text-[#8A8F98] tracking-wider">test_framework.py</span>
-              </div>
-              <div className="px-5 py-4 font-mono text-[11px] leading-[1.7] flex-1">
-                {[["# ","Test Automation Framework"],["",""],["class ","TestFramework",":"],["  engine"," = ","Pytest"," + Playwright"],["  report"," = ","Allure"],["  api_docs"," = ","OpenAPI"," (Swagger)"],["",""],["  def ","coverage","():"," -> ","75%"],["  def ","regression","():"," -> ","2 days"],["  def ","maintenance","():"," -> ","-50%"]].map((p, i) => (
-                  <div key={i}><span className="text-[#6872D9]">{p[0]}</span><span className="text-[#EDEDEF]">{p[1]}</span><span className="text-[#8A8F98]">{p[2]}</span><span className="text-[#5E6AD2]">{p[3]}</span><span className="text-[#8A8F98]/50">{p[4]}</span></div>
-                ))}
-                <div className="flex items-center gap-1.5 mt-2"><span className="w-1.5 h-3.5 bg-[#5E6AD2] animate-blink" /></div>
-              </div>
-              <div className="px-5 py-2.5 border-t border-white/[0.04] flex items-center justify-between font-mono text-[10px] uppercase tracking-wider text-[#8A8F98]">
-                <span>v2.4.1</span><span className="flex items-center gap-1.5 text-[#5E6AD2]"><span className="w-1.5 h-1.5 rounded-full bg-[#5E6AD2] shadow-[0_0_5px_rgba(94,106,210,0.4)]" />ALL PASSING</span>
-              </div>
-            </div>
+            ))}
           </div>
         </section>
 
