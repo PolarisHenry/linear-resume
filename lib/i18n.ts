@@ -33,8 +33,8 @@ export const t = {
     btn2:    { zh: "工作经历",       en: "Experience" },
   },
   stats: {
-    zh: [["5 年", "经验年限"], ["S 级", "年度绩效"], ["500+", "累计面试"], ["10 万+", "节省成本"]],
-    en: [["5Y", "Experience"], ["S Grade", "Performance"], ["500+", "Interviewed"], ["¥100K+", "Cost Saved"]],
+    zh: [["5 年", "经验年限"], ["S 级", "年度绩效"], ["4 人", "已培养"], ["10 万+", "节省成本"]],
+    en: [["5Y", "Experience"], ["S Grade", "Performance"], ["4", "Mentored"], ["¥100K+", "Cost Saved"]],
   },
   skills: {
     sectionLabel:{ zh: "能力矩阵",      en: "CAPABILITIES" },
@@ -72,7 +72,7 @@ export const t = {
         company: { zh: "店小秘 (D轮独角兽 · 跨境 SaaS 头部)", en: "Dianxiaomi (Series D Unicorn · Cross-border SaaS Leader)" },
         role:    { zh: "赛狐 ERP · 高级测试工程师", en: "Sailfox ERP · Senior Test Engineer" },
         highlights: {
-          zh: ["主导 FBM 订单发货、物流对账、物流追踪等 10+ 核心功能测试","指导自动化脚本开发，覆盖多平台业务场景","开发提效工具累计节省人力成本超 10 万元","2024 年度连续 3 季度优秀员工，Q2 全团队 150 人中最高 S 级","全年稳定性全团队第一，线上 bug 数最低，无严重线上问题","组织公司级测试技术培训 5 场，作为面试官累计面试 500+ 人，担任导师培养 4 人均已转正为核心骨干"],
+          zh: ["主导 FBM 订单发货、物流对账、物流追踪等 10+ 核心功能测试","指导自动化脚本开发，覆盖多平台业务场景","开发提效工具累计节省人力成本超 10 万元","2024 年度连续 3 季度优秀员工，Q2 全团队 150 人中最高 S 级","全年稳定性全团队第一，线上 bug 数最低，无严重线上问题","组织公司级测试技术培训 5 场，担任导师培养 4 人均已转正为骨干"],
           en: ["Led testing for 10+ features: FBM, logistics, tracking & more","Mentored automation script dev across multi-platform scenarios","Built tools saving over ¥100K in labor costs","2024: 3× Outstanding Employee; Q2 S-grade among 150 (only 2)","#1 annual stability; lowest online bugs; zero critical incidents","5 company-wide training sessions; mentored 4 — all became core contributors"],
         },
       },
@@ -92,8 +92,8 @@ export const t = {
     heading1: { zh: "核心",         en: "Key" },
     heading2: { zh: "成果",         en: "Results" },
     items: {
-      zh: ["2024 Q2 全团队 150 人中绩效 S 级 (仅 2 名额)","连续 3 季度优秀员工，功能稳定性全团队第一","作为面试官累计面试 500+ 候选人","担任导师培养 4 人，均已转正为核心骨干","开发提效工具节省人力成本超 10 万元，迁移效率翻倍","线上 bug 数全团队最低，无严重线上问题"],
-      en: ["2024 Q2: S-grade performance among 150 (only 2 awarded)","3× Outstanding Employee; #1 feature stability company-wide","Interviewed 500+ candidates as hiring panel","Mentored 4 — all promoted to core contributors","Productivity tools saved ¥100K+; 2x migration efficiency","Lowest online bug count; zero critical production issues"],
+      zh: ["2024 Q2 全团队 150 人中绩效 S 级 (仅 2 名额)","连续 3 季度优秀员工，功能稳定性全团队第一","担任导师培养 4 人，均已转正为骨干","开发提效工具节省人力成本超 10 万元，迁移效率翻倍","线上 bug 数全团队最低，无严重线上问题"],
+      en: ["2024 Q2: S-grade performance among 150 (only 2 awarded)","3× Outstanding Employee; #1 feature stability company-wide","Mentored 4 — all became core members","Productivity tools saved ¥100K+; 2x migration efficiency","Lowest online bug count; zero critical production issues"],
     },
   },
   projects: {
