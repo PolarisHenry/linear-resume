@@ -6,9 +6,11 @@ import { cn } from "@/lib/utils";
 import {
   Search, ArrowRight, ArrowUpRight,
   Code2, Bug, Globe, Zap, Brain, Database, GitBranch, Terminal, Cpu,
-  Mail, Phone, MapPin, Star, Trophy, Users, Languages,
+  Mail, Phone, MapPin, Star, Trophy, Users,
   ChevronRight, Copy, Check, Timer, Shield, CheckCircle2, Activity, BarChart3, ListTree, LayoutGrid,
 } from "lucide-react";
+import { Sidebar } from "@/components/Sidebar";
+import { MobileTabBar } from "@/components/MobileTabBar";
 
 const iconMap: Record<string, React.ReactNode> = {
   code: <Code2 className="w-3.5 h-3.5" />, bug: <Bug className="w-3.5 h-3.5" />,
@@ -17,19 +19,6 @@ const iconMap: Record<string, React.ReactNode> = {
   git: <GitBranch className="w-3.5 h-3.5" />, terminal: <Terminal className="w-3.5 h-3.5" />,
   cpu: <Cpu className="w-3.5 h-3.5" />,
 };
-
-function Ring({ value, size = 40, sw = 2.5 }: { value: number; size?: number; sw?: number }) {
-  const r = (size - sw) / 2, circ = 2 * Math.PI * r, off = circ - (value / 100) * circ;
-  return (
-    <svg width={size} height={size} className="progress-ring shrink-0">
-      <circle cx={size/2} cy={size/2} r={r} fill="none" stroke="rgba(255,255,255,0.05)" strokeWidth={sw} />
-      <circle cx={size/2} cy={size/2} r={r} fill="none" stroke="#5E6AD2" strokeWidth={sw} strokeLinecap="round"
-        strokeDasharray={circ} strokeDashoffset={off}
-        style={{ filter: "drop-shadow(0 0 4px rgba(94,106,210,0.4))" }} />
-      <text x="50%" y="50%" textAnchor="middle" dy=".35em" fill="#EDEDEF" fontSize="10" fontWeight="600" fontFamily="Inter, sans-serif">{value}%</text>
-    </svg>
-  );
-}
 
 function CopyBtn({ text }: { text: string }) {
   const [done, setDone] = useState(false);
@@ -49,8 +38,8 @@ export default function HomePage() {
 
   useEffect(() => {
     if (typedIdx >= email.length) return;
-    const t = setTimeout(() => setTypedIdx((i) => i + 1), 60);
-    return () => clearTimeout(t);
+    const timer = setTimeout(() => setTypedIdx((i) => i + 1), 60);
+    return () => clearTimeout(timer);
   }, [typedIdx, email.length]);
 
   const handleNav = (id: string) => {
@@ -74,35 +63,30 @@ export default function HomePage() {
         <div className="ambient-blob ambient-2" />
       </div>
 
-      {/* ── SIDEBAR ── */}
-      <aside className="fixed top-0 left-0 bottom-0 z-40 w-[220px] flex flex-col bg-[#07070a]/90 backdrop-blur-xl border-r border-white/[0.05]">
-        <div className="flex items-center gap-2.5 px-4 py-4 border-b border-white/[0.04]">
-          <img src="/logo.png" alt="Logo" className="w-6 h-6 rounded object-contain ring-1 ring-white/[0.06]" />
-          <span className="font-semibold text-sm text-[#EDEDEF]">Arion</span>
-        </div>
-        <nav className="flex-1 px-3 py-4 flex flex-col gap-0.5">
-          {sidebarItems.map((item) => (
-            <button key={item.id} onClick={() => handleNav(item.id)}
-              className={cn(
-                "flex items-center gap-2.5 w-full text-left px-3 py-2 text-[13px] font-medium rounded-md transition-colors duration-150",
-                activeSection === item.id ? "text-[#EDEDEF] bg-white/[0.06]" : "text-[#8A8F98] hover:text-[#EDEDEF] hover:bg-white/[0.04]"
-              )}>
-              <span className={cn(activeSection === item.id ? "text-[#5E6AD2]" : "text-[#8A8F98]")}>{item.icon}</span>
-              <span className="flex-1">{item.label}</span>
-              {activeSection === item.id && <span className="w-1 h-4 rounded-full bg-[#5E6AD2]" />}
-            </button>
-          ))}
-        </nav>
-        <div className="px-4 py-3 border-t border-white/[0.04] flex items-center justify-between">
-          <button onClick={() => setLang((l) => (l === "zh" ? "en" : "zh"))}
-            className="flex items-center gap-1.5 text-[12px] text-[#8A8F98] hover:text-[#EDEDEF] transition-colors font-mono">
-            <Languages className="w-3.5 h-3.5" />{lang === "zh" ? "EN" : "中"}
-          </button>
-        </div>
-      </aside>
+      {/* ── Desktop Sidebar ── */}
+      <div className="hidden md:block">
+        <Sidebar
+          items={sidebarItems}
+          activeSection={activeSection}
+          onNavigate={handleNav}
+          lang={lang}
+          onToggleLang={() => setLang((l) => (l === "zh" ? "en" : "zh"))}
+        />
+      </div>
+
+      {/* ── Mobile Tab Bar ── */}
+      <div className="md:hidden">
+        <MobileTabBar
+          items={sidebarItems}
+          activeSection={activeSection}
+          onNavigate={handleNav}
+          lang={lang}
+          onToggleLang={() => setLang((l) => (l === "zh" ? "en" : "zh"))}
+        />
+      </div>
 
       {/* ── MAIN ── */}
-      <main className="flex-1 ml-[220px] relative z-10 px-8 lg:px-12 xl:px-16 py-10">
+      <main className="flex-1 ml-0 md:ml-[56px] relative z-10 px-4 sm:px-8 lg:px-12 xl:px-16 py-6 sm:py-10 pb-24 md:pb-10">
 
         {/* ===== OVERVIEW ===== */}
         <section id="overview" className="min-h-screen flex flex-col justify-center pb-12">
@@ -122,15 +106,15 @@ export default function HomePage() {
           </div>
 
           {/* Name */}
-          <h1 className="text-[clamp(3rem,6vw,6rem)] font-semibold leading-[0.94] tracking-[-0.04em]">
+          <h1 className="text-[clamp(2.5rem,6vw,6rem)] font-semibold leading-[0.94] tracking-[-0.04em]">
             <span className="text-gradient">{t.hero.name[lang]}</span>
           </h1>
 
           {/* Subtitle + CTAs */}
           <div className="mt-5 flex flex-col lg:flex-row lg:items-end gap-4 lg:gap-8">
             <div>
-              <p className="text-xl sm:text-2xl text-[#8A8F98] font-medium tracking-tight">{t.hero.title[lang]}</p>
-              <p className="mt-1.5 text-[15px] text-[#8A8F98]/70 leading-relaxed max-w-2xl">{t.hero.subtitle[lang]}</p>
+              <p className="text-lg sm:text-2xl text-[#8A8F98] font-medium tracking-tight">{t.hero.title[lang]}</p>
+              <p className="mt-1.5 text-[14px] sm:text-[15px] text-[#8A8F98]/70 leading-relaxed max-w-2xl">{t.hero.subtitle[lang]}</p>
             </div>
             <div className="flex items-center gap-3 lg:ml-auto shrink-0">
               <a href="#skills" onClick={() => handleNav("skills")} className="btn-primary">{t.hero.btn1[lang]} <ArrowRight className="w-3.5 h-3.5" /></a>
@@ -141,9 +125,9 @@ export default function HomePage() {
           {/* Metrics */}
           <div className="grid grid-cols-2 lg:grid-cols-4 mt-10 panel overflow-hidden">
             {t.stats[lang].map(([value, label], i) => (
-              <div key={label} className={cn("text-center py-7 px-4", i < 3 && "border-r border-white/[0.04]")}>
-                <div className="text-3xl sm:text-4xl font-semibold tracking-[-0.02em] text-gradient-accent tabular-nums">{value}</div>
-                <div className="font-mono text-[10px] uppercase tracking-[0.2em] text-[#8A8F98] mt-2">{label}</div>
+              <div key={label} className={cn("text-center py-6 sm:py-8 px-3 sm:px-4", "border-white/[0.04]", i < t.stats[lang].length - 1 && "border-r", i < t.stats[lang].length - 2 && "sm:border-r", i < t.stats[lang].length - 2 && "border-b sm:border-b-0 border-white/[0.04]", i >= t.stats[lang].length - 2 && "border-b-0")}>
+                <div className="text-[clamp(2rem,4vw,3.5rem)] font-bold tracking-[-0.03em] text-gradient-accent tabular-nums leading-none">{value}</div>
+                <div className="text-[12px] font-medium text-[#8A8F98] mt-1.5">{label}</div>
               </div>
             ))}
           </div>
@@ -160,26 +144,24 @@ export default function HomePage() {
 
           <div className="panel overflow-hidden">
             {t.skills.items.map((s, i) => {
-              const levels = [92, 88, 80, 78, 72, 85, 82, 72, 75];
               const tags = [
                 ["Python", "JS/TS", "Java"], ["Pytest", "Playwright", "Allure"], ["Vue3", "FastAPI", "Vite"],
                 ["Claude", "Cursor", "Codex"], ["AES", "CAPTCHA"], ["MySQL", "Navicat"],
                 ["Git", "Branch"], ["CLI", "日志"], ["Postman", "JMeter"],
               ];
               return (
-                <div key={s.icon} className="flex items-center gap-3 sm:gap-4 px-4 sm:px-6 py-3.5 border-b border-white/[0.03] last:border-0 hover:bg-white/[0.015] transition-colors group cursor-pointer">
+                <div key={s.icon} className="flex items-center gap-2 sm:gap-4 px-3 sm:px-6 py-3.5 border-b border-white/[0.03] last:border-0 hover:bg-white/[0.015] transition-colors group cursor-pointer">
                   <span className={cn("shrink-0 w-0.5 h-8 rounded-full", i < 3 ? "bg-[#5E6AD2]" : i < 6 ? "bg-[#5E6AD2]/50" : "bg-[#5E6AD2]/25")} />
-                  <span className="hidden lg:inline font-mono text-[10px] text-[#8A8F98]/50 w-12 shrink-0">SKL-{String(i+1).padStart(2,"0")}</span>
+                  <span className="hidden sm:inline font-mono text-[10px] text-[#8A8F98]/50 w-12 shrink-0">SKL-{String(i+1).padStart(2,"0")}</span>
                   <span className="w-8 h-8 rounded-lg bg-white/[0.03] border border-white/[0.05] flex items-center justify-center text-[#5E6AD2] group-hover:border-[#5E6AD2]/30 transition-colors shrink-0">{iconMap[s.icon]}</span>
                   <div className="flex-1 min-w-0">
-                    <div className="text-[14px] font-medium text-[#EDEDEF]">{s.title[lang]}</div>
-                    <div className="text-[12px] text-[#8A8F98] truncate">{s.desc[lang]}</div>
+                    <div className="text-[13px] sm:text-[14px] font-medium text-[#EDEDEF]">{s.title[lang]}</div>
+                    <div className="text-[11px] sm:text-[12px] text-[#8A8F98] truncate">{s.desc[lang]}</div>
                   </div>
-                  <div className="hidden xl:flex items-center gap-1">
+                  <div className="hidden sm:flex items-center gap-1 flex-wrap justify-end">
                     {tags[i].map((t) => (<span key={t} className="px-1.5 py-0.5 rounded text-[9px] font-mono text-[#8A8F98]/60 border border-white/[0.04]">{t}</span>))}
                   </div>
-                  <Ring value={levels[i]} />
-                  <ChevronRight className="w-3.5 h-3.5 text-[#8A8F98] opacity-0 -translate-x-1 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-200" />
+                  <ChevronRight className="w-3.5 h-3.5 text-[#8A8F98] opacity-0 -translate-x-1 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-200 shrink-0 hidden sm:block" />
                 </div>
               );
             })}
@@ -290,7 +272,7 @@ export default function HomePage() {
               <span className="text-gradient">{t.education.heading1[lang]}</span> <span className="text-gradient-accent">{t.education.heading2[lang]}</span>
             </h2>
           </div>
-          <div className="panel p-6 flex flex-col sm:flex-row items-start sm:items-center gap-4">
+          <div className="panel p-4 sm:p-6 flex flex-col sm:flex-row items-start sm:items-center gap-4">
             <div className="w-12 h-12 rounded-xl bg-[#5E6AD2]/[0.08] border border-[#5E6AD2]/[0.15] flex items-center justify-center text-lg font-semibold text-[#5E6AD2] shrink-0">
               {t.education.items[0].school[lang][0]}
             </div>
@@ -301,7 +283,7 @@ export default function HomePage() {
             <span className="badge">{t.education.items[0].type[lang]}</span>
             <div className="flex flex-wrap gap-2 mt-2 sm:mt-0 sm:ml-4">
               {t.selfEval.traits[lang].map((trait) => (
-                <span key={trait} className="px-3 py-1 rounded-lg text-[12px] text-[#8A8F98] bg-white/[0.02] border border-white/[0.04] hover:text-[#EDEDEF] hover:border-white/[0.08] transition-colors">{trait}</span>
+                <span key={trait} className="px-2 sm:px-3 py-1 rounded-lg text-[11px] sm:text-[12px] text-[#8A8F98] bg-white/[0.02] border border-white/[0.04] hover:text-[#EDEDEF] hover:border-white/[0.08] transition-colors">{trait}</span>
               ))}
             </div>
           </div>
@@ -312,8 +294,8 @@ export default function HomePage() {
           <div className="mb-8">
             <span className="font-mono text-[10px] uppercase tracking-[0.3em] text-[#5E6AD2] font-medium">{t.contact.heading1[lang]} {t.contact.heading2[lang]}</span>
           </div>
-          <div className="panel p-6 sm:p-8">
-            <p className="text-[15px] text-[#8A8F98] leading-relaxed mb-6">{t.contact.subtitle[lang]}</p>
+          <div className="panel p-4 sm:p-8">
+            <p className="text-[14px] sm:text-[15px] text-[#8A8F98] leading-relaxed mb-6">{t.contact.subtitle[lang]}</p>
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
               {[
                 { icon: <Phone className="w-4 h-4" />, label: lang === "zh" ? "电话" : "Phone", value: lang === "zh" ? "[已加密]" : "[Protected]" },
@@ -324,7 +306,7 @@ export default function HomePage() {
                   <span className="w-9 h-9 rounded-lg bg-white/[0.03] border border-white/[0.05] flex items-center justify-center text-[#5E6AD2] group-hover/c:border-[#5E6AD2]/25 transition-colors shrink-0">{c.icon}</span>
                   <div className="min-w-0">
                     <div className="font-mono text-[10px] uppercase tracking-wider text-[#8A8F98]">{c.label}</div>
-                    <div className="text-[14px] text-[#EDEDEF] font-medium mt-0.5">{c.value}</div>
+                    <div className="text-[13px] sm:text-[14px] text-[#EDEDEF] font-medium mt-0.5">{c.value}</div>
                   </div>
                   <CopyBtn text={c.value} />
                 </div>
