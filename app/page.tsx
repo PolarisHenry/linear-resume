@@ -34,6 +34,7 @@ export default function HomePage() {
   const [lang, setLang] = useState<Lang>("zh");
   const [activeSection, setActiveSection] = useState("overview");
   const [typedIdx, setTypedIdx] = useState(0);
+  const [expandedSkill, setExpandedSkill] = useState<number | null>(null);
   const email = "polarishenry990908@gmail.com";
 
   useEffect(() => {
@@ -41,6 +42,43 @@ export default function HomePage() {
     const timer = setTimeout(() => setTypedIdx((i) => i + 1), 60);
     return () => clearTimeout(timer);
   }, [typedIdx, email.length]);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const isAtBottom = window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 50;
+      if (isAtBottom) {
+        setActiveSection("contact");
+        return;
+      }
+    };
+
+    window.addEventListener("scroll", handleScroll);
+
+    const observerOptions = {
+      root: null,
+      rootMargin: "-30% 0px -50% 0px",
+      threshold: 0,
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          setActiveSection(entry.target.id);
+        }
+      });
+    }, observerOptions);
+
+    const sections = ["overview", "skills", "experience", "projects", "contact"];
+    sections.forEach((id) => {
+      const el = document.getElementById(id);
+      if (el) observer.observe(el);
+    });
+
+    return () => {
+      observer.disconnect();
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, []);
 
   const handleNav = (id: string) => {
     setActiveSection(id);
@@ -125,7 +163,12 @@ export default function HomePage() {
           {/* Metrics */}
           <div className="grid grid-cols-2 lg:grid-cols-4 mt-10 panel overflow-hidden">
             {t.stats[lang].map(([value, label], i) => (
-              <div key={label} className={cn("text-center py-6 sm:py-8 px-3 sm:px-4", "border-white/[0.04]", i < t.stats[lang].length - 1 && "border-r", i < t.stats[lang].length - 2 && "sm:border-r", i < t.stats[lang].length - 2 && "border-b sm:border-b-0 border-white/[0.04]", i >= t.stats[lang].length - 2 && "border-b-0")}>
+              <div key={label} className={cn(
+                "text-center py-6 sm:py-8 px-3 sm:px-4 border-white/[0.04]",
+                (i === 0 || i === 2) && "border-r",
+                i === 1 && "lg:border-r",
+                i < 2 && "border-b lg:border-b-0"
+              )}>
                 <div className="text-[clamp(2rem,4vw,3.5rem)] font-bold tracking-[-0.03em] text-gradient-accent tabular-nums leading-none">{value}</div>
                 <div className="text-[12px] font-medium text-[#8A8F98] mt-1.5">{label}</div>
               </div>
@@ -149,19 +192,30 @@ export default function HomePage() {
                 ["Claude", "Cursor", "Codex"], ["AES", "CAPTCHA"], ["MySQL", "Navicat"],
                 ["Git", "Branch"], ["CLI", "日志"], ["Postman", "JMeter"],
               ];
+              const isExpanded = expandedSkill === i;
               return (
-                <div key={s.icon} className="flex items-center gap-2 sm:gap-4 px-3 sm:px-6 py-3.5 border-b border-white/[0.03] last:border-0 hover:bg-white/[0.015] transition-colors group cursor-pointer">
-                  <span className={cn("shrink-0 w-0.5 h-8 rounded-full", i < 3 ? "bg-[#5E6AD2]" : i < 6 ? "bg-[#5E6AD2]/50" : "bg-[#5E6AD2]/25")} />
-                  <span className="hidden sm:inline font-mono text-[10px] text-[#8A8F98]/50 w-12 shrink-0">SKL-{String(i+1).padStart(2,"0")}</span>
-                  <span className="w-8 h-8 rounded-lg bg-white/[0.03] border border-white/[0.05] flex items-center justify-center text-[#5E6AD2] group-hover:border-[#5E6AD2]/30 transition-colors shrink-0">{iconMap[s.icon]}</span>
-                  <div className="flex-1 min-w-0">
-                    <div className="text-[13px] sm:text-[14px] font-medium text-[#EDEDEF]">{s.title[lang]}</div>
-                    <div className="text-[11px] sm:text-[12px] text-[#8A8F98] truncate">{s.desc[lang]}</div>
+                <div
+                  key={s.icon}
+                  onClick={() => setExpandedSkill(isExpanded ? null : i)}
+                  className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4 px-3 sm:px-6 py-3.5 border-b border-white/[0.03] last:border-0 hover:bg-white/[0.015] transition-colors group cursor-pointer"
+                >
+                  <div className="flex items-center gap-2 sm:gap-4 w-full min-w-0">
+                    <span className={cn("shrink-0 w-0.5 h-8 rounded-full", i < 3 ? "bg-[#5E6AD2]" : i < 6 ? "bg-[#5E6AD2]/50" : "bg-[#5E6AD2]/25")} />
+                    <span className="hidden sm:inline font-mono text-[10px] text-[#8A8F98]/50 w-12 shrink-0">SKL-{String(i+1).padStart(2,"0")}</span>
+                    <span className="w-8 h-8 rounded-lg bg-white/[0.03] border border-white/[0.05] flex items-center justify-center text-[#5E6AD2] group-hover:border-[#5E6AD2]/30 transition-colors shrink-0">{iconMap[s.icon]}</span>
+                    <div className="flex-1 min-w-0">
+                      <div className="text-[13px] sm:text-[14px] font-medium text-[#EDEDEF]">{s.title[lang]}</div>
+                      <div className={cn("text-[11px] sm:text-[12px] text-[#8A8F98] transition-all duration-200", isExpanded ? "whitespace-normal mt-0.5" : "truncate")}>{s.desc[lang]}</div>
+                    </div>
+                    <ChevronRight className={cn("w-3.5 h-3.5 text-[#8A8F98] transition-all duration-200 shrink-0", isExpanded ? "rotate-90 text-[#5E6AD2]" : "sm:opacity-0 sm:-translate-x-1 sm:group-hover:opacity-100 sm:group-hover:translate-x-0")} />
                   </div>
-                  <div className="hidden sm:flex items-center gap-1 flex-wrap justify-end">
-                    {tags[i].map((t) => (<span key={t} className="px-1.5 py-0.5 rounded text-[9px] font-mono text-[#8A8F98]/60 border border-white/[0.04]">{t}</span>))}
+                  <div className={cn("flex-wrap gap-1 mt-2 sm:mt-0 sm:ml-auto justify-start sm:justify-end", isExpanded ? "flex" : "hidden sm:flex")}>
+                    {tags[i].map((t) => (
+                      <span key={t} className="px-1.5 py-0.5 rounded text-[9px] font-mono text-[#8A8F98]/60 border border-white/[0.04]">
+                        {t}
+                      </span>
+                    ))}
                   </div>
-                  <ChevronRight className="w-3.5 h-3.5 text-[#8A8F98] opacity-0 -translate-x-1 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-200 shrink-0 hidden sm:block" />
                 </div>
               );
             })}
@@ -296,17 +350,17 @@ export default function HomePage() {
           </div>
           <div className="panel p-4 sm:p-8">
             <p className="text-[14px] sm:text-[15px] text-[#8A8F98] leading-relaxed mb-6">{t.contact.subtitle[lang]}</p>
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
               {[
                 { icon: <Phone className="w-4 h-4" />, label: lang === "zh" ? "电话" : "Phone", value: lang === "zh" ? "[已加密]" : "[Protected]" },
                 { icon: <Mail className="w-4 h-4" />, label: "Email", value: email },
                 { icon: <MapPin className="w-4 h-4" />, label: lang === "zh" ? "位置" : "Location", value: lang === "zh" ? "中国 · 深圳" : "Shenzhen, China" },
               ].map((c) => (
-                <div key={c.label} className="flex items-center gap-3 py-2 px-3 rounded-xl hover:bg-white/[0.02] transition-colors group/c">
+                <div key={c.label} className="flex items-center gap-3 py-2 px-3 rounded-xl hover:bg-white/[0.02] transition-colors group/c min-w-0">
                   <span className="w-9 h-9 rounded-lg bg-white/[0.03] border border-white/[0.05] flex items-center justify-center text-[#5E6AD2] group-hover/c:border-[#5E6AD2]/25 transition-colors shrink-0">{c.icon}</span>
-                  <div className="min-w-0">
+                  <div className="min-w-0 flex-1">
                     <div className="font-mono text-[10px] uppercase tracking-wider text-[#8A8F98]">{c.label}</div>
-                    <div className="text-[13px] sm:text-[14px] text-[#EDEDEF] font-medium mt-0.5">{c.value}</div>
+                    <div className="text-[13px] sm:text-[14px] text-[#EDEDEF] font-medium mt-0.5 truncate break-all">{c.value}</div>
                   </div>
                   <CopyBtn text={c.value} />
                 </div>
